@@ -673,7 +673,7 @@ class Mongo_db {
 	*	@usage : $this->mongo_db->insert('foo', $data = array());
 	*/
 	
-	public function insert($collection = "", $insert = array())
+	public function insert($collection = "", $insert = array(), $options = array())
 	{
 		if (empty($collection))
 		{
@@ -687,7 +687,8 @@ class Mongo_db {
 		
 		try
 		{
-			$this->db->{$collection}->insert($insert, array($this->query_safety	 => TRUE));
+			$options = array_merge(array($this->query_safety => TRUE, 'multiple' => FALSE), $options);
+			$this->db->{$collection}->insert($insert, $options);
 			if (isset($insert['_id']))
 			{
 				return ($insert['_id']);
@@ -712,7 +713,7 @@ class Mongo_db {
     *
     * @usage : $this->mongo_db->batch_insert('foo', $data = array());
     */
-    public function batch_insert($collection = "", $insert = array())
+    public function batch_insert($collection = "", $insert = array(), $options = array())
     {
             if (empty($collection))
             {
@@ -726,7 +727,8 @@ class Mongo_db {
 
             try
             {
-                    $this->db->{$collection}->batchInsert($insert, array($this->query_safety => TRUE));
+					$options = array_merge(array($this->query_safety => TRUE, 'multiple' => FALSE), $options);
+                    $this->db->{$collection}->batchInsert($insert, $options);
                     if (isset($insert['_id']))
                     {
                             return ($insert['_id']);
@@ -777,7 +779,7 @@ class Mongo_db {
 				
 		try
 		{
-			$options = array_merge($options, array($this->query_safety => TRUE, 'multiple' => FALSE));
+			$options = array_merge(array($this->query_safety => TRUE, 'multiple' => FALSE), $options);
 			$this->db->{$collection}->update($this->wheres, $this->updates, $options);
 			$this->_clear();
 			return (TRUE);
@@ -823,7 +825,7 @@ class Mongo_db {
 				
 		try
 		{
-			$options = array_merge($options, array($this->query_safety => TRUE, 'multiple' => TRUE));
+			$options = array_merge(array($this->query_safety => TRUE, 'multiple' => TRUE), $options);
 			$this->db->{$collection}->update($this->wheres, $this->updates, $options);
 			$this->_clear();
 			return (TRUE);
